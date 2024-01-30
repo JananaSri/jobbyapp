@@ -3,7 +3,7 @@ import Loader from 'react-loader-spinner'
 import {BsSearch} from 'react-icons/bs'
 import Cookies from 'js-cookie'
 import JobCard from '../JobCard'
-import JobsFilterGroup from '../JobsFilterGroup'
+import JobFilterGroup from '../JobFilterGroup'
 import './index.css'
 
 const employmentTypesList = [

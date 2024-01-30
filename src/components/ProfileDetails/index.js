@@ -1,99 +1,97 @@
+import Cookies from 'js-cookie'
 import {Component} from 'react'
 import Loader from 'react-loader-spinner'
-import Cookies from 'js-cookie'
 import './index.css'
 
-const apiStatusConstants = {
+const userApiConstants = {
   initial: 'INITIAL',
-  inProgress: 'INPROGRESS',
+  loading: 'LOADING',
   success: 'SUCCESS',
   failure: 'FAILURE',
 }
 
 class ProfileDetails extends Component {
-  state = {
-    profileList: [],
-    apiStatus: apiStatusConstants.initial,
-  }
+  state = {userDetails: {}, userApi: userApiConstants.initial}
 
   componentDidMount() {
-    this.getProfileDetails()
+    this.getUserDetails()
   }
 
-  getProfileDetails = async () => {
-    this.setState({
-      apiStatus: apiStatusConstants.inProgress,
-    })
+  getUserDetails = async () => {
+    this.setState({userApi: userApiConstants.loading})
 
+    const apiUrl = 'https://apis.ccbp.in/profile'
     const jwtToken = Cookies.get('jwt_token')
-    const url = 'https://apis.ccbp.in/profile'
     const options = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
       method: 'GET',
     }
-    const response = await fetch(url, options)
-    if (response.ok === true) {
-      const data = await response.json()
-      const profileData = {
-        name: data.profile_details.name,
-        profileImageUrl: data.profile_details.profile_image_url,
-        shortBio: data.profile_details.short_bio,
+    const response = await fetch(apiUrl, options)
+    const data = await response.json()
+    if (response.ok) {
+      const profileDetails = data.profile_details
+      const updatedProfile = {
+        name: profileDetails.name,
+        profileImageUrl: profileDetails.profile_image_url,
+        shortBio: profileDetails.short_bio,
       }
       this.setState({
-        profileList: profileData,
-        apiStatus: apiStatusConstants.success,
+        userDetails: updatedProfile,
+        userApi: userApiConstants.success,
       })
+    } else {
+      this.setState({userApi: userApiConstants.failure})
     }
   }
 
-  renderProfileDetails = () => {
-    const {profileList} = this.state
-    const {name, profileImageUrl, shortBio} = profileList
+  onClickRetry = () => {
+    this.getUserDetails()
+  }
 
+  renderUserProfileSuccess = () => {
+    const {userDetails} = this.state
+    const {profileImageUrl, name, shortBio} = userDetails
     return (
-      <div className="profile-container">
-        <img src={profileImageUrl} alt="profile" className="profile-logo" />
-        <h1 className="name-heading">{name}</h1>
-        <p className="bio">{shortBio}</p>
+      <div className="user-container">
+        <img src={profileImageUrl} alt="profile" className="profile-img" />
+        <h1 className="user-name">{name}</h1>
+        <p className="user-bio">{shortBio}</p>
       </div>
     )
   }
 
-  renderLoadingView = () => (
-    <div className="profile-loader-container" testid="loader">
+  getLoader = () => (
+    <div className="loader-container" data-testid="loader">
       <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
     </div>
   )
 
-  renderFailureView = () => (
-    <div className="failure-view-container">
-      <button
-        type="button"
-        testid="button"
-        className="job-item-failure-button"
-        onClick={this.getProfileDetails}
-      >
+  renderUserFailure = () => (
+    <div className="retry-container">
+      <button type="button" className="retry-btn" onClick={this.onClickRetry}>
         Retry
       </button>
     </div>
   )
 
-  render() {
-    const {apiStatus} = this.state
-
-    switch (apiStatus) {
-      case apiStatusConstants.success:
-        return this.renderProfileDetails()
-      case apiStatusConstants.inProgress:
-        return this.renderLoadingView()
-      case apiStatusConstants.failure:
-        return this.renderFailureView()
+  getUserSwitch = () => {
+    const {userApi} = this.state
+    switch (userApi) {
+      case userApiConstants.success:
+        return this.renderUserProfileSuccess()
+      case userApiConstants.failure:
+        return this.renderUserFailure()
+      case userApiConstants.loading:
+        return this.getLoader()
       default:
         return null
     }
   }
-}
 
+  render() {
+    return <>{this.getUserSwitch()}</>
+  }
+}
 export default ProfileDetails

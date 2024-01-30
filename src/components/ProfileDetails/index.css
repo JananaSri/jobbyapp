@@ -1,43 +1,50 @@
-.profile-container {
+.user-container {
   background-image: url('https://assets.ccbp.in/frontend/react-js/profile-bg.png');
   background-size: cover;
-  width: 300px;
-  align-self: flex-start;
-  border-radius: 15px;
+  height: 25vh;
   padding: 20px;
-  margin-bottom: 25px;
+  border: none;
+  border-radius: 20px;
+  margin: 0px;
+  max-width: 350px;
 }
-.profile-loader-container {
+.profile-img {
+  height: 40px;
+}
+.user-name {
+  color: #6366f1;
+  font-size: 18px;
+}
+.user-bio {
+  color: #64748b;
+  font-size: 14px;
+}
+.loader-container {
+  background-color: #000000;
+  height: 25vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 200px;
+  max-width: 350px;
 }
-.profile-logo {
-  width: 50px;
+.retry-container {
+  background-color: #000000;
+  height: 25vh;
+  display: flex;
+  max-width: 350px;
+  justify-content: center;
+  align-items: center;
 }
-.name-heading {
-  color: #6366f1;
-  font-size: 22px;
-  font-family: 'Roboto';
-  font-weight: 800;
-  margin-top: 15px;
-}
-.bio {
-  color: #475569;
-  font-size: 16px;
-  font-family: 'Roboto';
-  margin-top: 15px;
-  line-height: 1.8;
-}
-.job-item-failure-button {
+.retry-btn {
   background-color: #6366f1;
-  padding: 12px;
-  width: 110px;
+  color: #ffffff;
   border: none;
-  font-size: 16px;
-  font-family: 'Roboto';
-  color: #fff;
-  font-weight: 500;
-  border-radius: 6px;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+@media screen and (min-width: 768px) {
+  .user-container {
+    max-width: 250px;
+  }
 }
